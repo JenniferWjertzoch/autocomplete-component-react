@@ -1,70 +1,90 @@
-# Getting Started with Create React App
+# Autocomplete Component in React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Build a sample react autocomplete component.
 
-## Available Scripts
+This is an exercise where I followed the tutorial from freecodecamp
+[React Beginners Tutorial - Build an Autocomplete Text Box](https://www.youtube.com/watch?v=NnpISZANByg)
 
-In the project directory, you can run:
+Check the demo hosted on Netlify Check the demo hosted on Netlify [Autocomplete Component React](https://zealous-kalam-6c0e9c.netlify.app/).
 
-### `yarn start`
+Instructions
+First clone this repository.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+`$ git clone git@github.com:JenniferWjertzoch/autocomplete-component-react.git`
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Install dependencies. Make sure you already have nodejs & npm installed in your system.
 
-### `yarn test`
+`$ npm install`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Run it
 
-### `yarn build`
+`$ npm run start`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## The User Story
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+I created a normal text input enhanced by a panel of suggested options.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The user can:
 
-### `yarn eject`
+1. can enter search terms
+2. suggestions will be displayed
+3. can select a term from the list
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+---
+## The Approach
+### Search and Filter Suggestions
+The suggestions need to be updated in the state as the user types in the input field.
+Each time they get updated, the component render()-function gets called again and it only returns a list with a matching items as this is what's in the state at the time the function gets called.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+I created a separate autocomplete component, that is imported to App.js and added as a simple HTML-Tag.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+The Autocomplete.js consists of:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### *1. The Constructor*
 
-## Learn More
+The React Component Constructor must take an argument called props and call the superclass constructor passing the props argument to it.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+In there we have a list with suggestions. The suggestion object should be empty when we call the component for the first time. 
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### *2. render()-Function*
 
-### Code Splitting
+From this we must return the react elements we want to represent our components.
+Thanks to JSX we can write them in Javascript as HTML.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+First task was to find out when the user writes to the text box to filter the item list and output the matching items.
+For this I used an onChange-event which triggers the onTextChange-Function when a user adds text to the input field. Then another function renderSuggestions() is executed.
 
-### Analyzing the Bundle Size
+### *3. onTextChange()-Function*
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+This function takes care of typing into the input field. The Event.target throws out what the user writes into the input field.
+With the RegExp object we can look for matching text with a pattern.
+Then we filter our items and with the help of the regex.test() method executes a search for a match between a regular expression and a specified string. It returns true or false.
+The state will be updated and setState() tells the component that the state has changed and triggers a rerender and display the new version ofthe component means with the updated suggestions of the list.
 
-### Making a Progressive Web App
+### *4. renderSuggestions()-Function*
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+First suggestions need to be destructured from the state.
+If the list is empty, then return null and anything null will not be shown by the browser.
+Otherwise map over the suggestions and output a li-element and render the suggestions in the render function.
 
-### Advanced Configuration
+---
+### Select Suggestion from Suggestion-List
+When the user clicks a suggestion in the list, it poulates the textbox with the suggestion in it.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+To controle the text-value in the input field, we need to add a value prop first.
 
-### Deployment
+To fill the value with text, we need to give the state in the constructor a text-property with an empty string.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+In the render()-function extract the text-values from the state.
 
-### `yarn build` fails to minify
+In the onTextChange-function() we set that value in the state as text, when the textbox value changes.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### *5. SuggestionSelected()-Function*
+
+This function says, when we have selected a suggestion.
+It takes the selected item of the suggestion list as an argument and we update the state, so the value the textbox uses is the selected suggestion.
+suggestions list is deleted, by setting it an empty array.
+
+---
+## Styled-Components and CSS-in-JS
+For the styling of the component I used the CSS-in-JS approach. This makes the component completely self-sufficient and it is possible to reuse them in any page. 
